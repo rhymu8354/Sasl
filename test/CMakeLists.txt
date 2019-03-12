@@ -1,9 +1,9 @@
-# CMakeLists.txt for SaslClientTests
+# CMakeLists.txt for SaslTests
 #
 # © 2019 by Richard Walters
 
 cmake_minimum_required(VERSION 3.8)
-set(This SaslClientTests)
+set(This SaslTests)
 
 set(Sources
     src/Client/LoginTests.cpp
@@ -21,7 +21,8 @@ target_include_directories(${This} PRIVATE ..)
 target_link_libraries(${This} PUBLIC
     Base64
     gtest_main
-    SaslClient
+    Hash
+    Sasl
     SystemAbstractions
 )
 

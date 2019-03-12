@@ -1,9 +1,9 @@
-# CMakeLists.txt for SaslClient
+# CMakeLists.txt for Sasl
 #
 # © 2019 by Richard Walters
 
 cmake_minimum_required(VERSION 3.8)
-set(This SaslClient)
+set(This Sasl)
 
 set(Headers
     include/Sasl/Client/Mechanism.hpp
