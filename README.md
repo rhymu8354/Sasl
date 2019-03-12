@@ -1,19 +1,21 @@
-# Sasl::Client
+# Sasl
 
-This is a library which implements the client side of various Simple
-Authentication and Security Layer (SASL -- [RFC
-4422](https://tools.ietf.org/html/rfc4422)) mechanisms.
+This is a library which implements various Simple Authentication and Security
+Layer (SASL -- [RFC 4422](https://tools.ietf.org/html/rfc4422)) mechanisms.
 
 ## Usage
 
-The `Sasl::Client::Plain` class implements the PLAIN SASL ([RFC
+The `Sasl::Client::Mechanism` class defines the common interface for all
+client-side SASL mechanisms.
+
+The `Sasl::Client::Plain` class implements the client-side PLAIN SASL ([RFC
 4616](https://tools.ietf.org/html/rfc4616)) mechanism.
 
-The `Sasl::Client::Login` class implements the LOGIN SASL
+The `Sasl::Client::Login` class implements the client-side LOGIN SASL
 ([draft-murchison-sasl-login](https://tools.ietf.org/html/draft-murchison-sasl-login-00))
 mechanism.
 
-The `Sasl::Client::Scram` class implements the SCRAM SASL ([RFC
+The `Sasl::Client::Scram` class implements the client-side SCRAM SASL ([RFC
 5802](https://tools.ietf.org/html/rfc5802)) mechanism.
 
 ## Supported platforms / recommended toolchains
