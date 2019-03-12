@@ -85,7 +85,7 @@ namespace {
 
         /**
          * This is the Base64 encoding of the signature the server computes
-         *
+         * in order for the client to trust the server.
          */
         std::string serverSignature;
     };
