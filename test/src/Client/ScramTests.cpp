@@ -162,7 +162,9 @@ namespace {
             "c=biws,r=" + serverNonce
         );
         const auto serverFirstMessage = SystemAbstractions::sprintf(
-            ("r=" + serverNonce + ",s=" + base64EncodedSalt + ",i=%zu").c_str(),
+            "r=%s,s=%s,i=%zu",
+            serverNonce.c_str(),
+            base64EncodedSalt.c_str(),
             numIterations
         );
         const auto authMessage = ByteVectorFromString(
