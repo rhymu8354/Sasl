@@ -140,20 +140,17 @@ namespace {
         size_t digestSize
     ) {
         const auto salt = Base64::Decode(base64EncodedSalt);
+        const auto hmac = Hash::MakeHmacBytesToBytesFunction(
+            hashFunction,
+            blockSize
+        );
         const auto saltedPassword = Hash::Pbkdf2(
-            Hash::MakeHmacBytesToBytesFunction(
-                hashFunction,
-                blockSize
-            ),
+            hmac,
             digestSize,
             ByteVectorFromString(Normalize(password)),
             ByteVectorFromString(salt),
             numIterations,
             digestSize / 8
-        );
-        const auto hmac = Hash::MakeHmacBytesToBytesFunction(
-            hashFunction,
-            blockSize
         );
         const auto clientKey = hmac(saltedPassword, ByteVectorFromString("Client Key"));
         const auto storedKey = hashFunction(clientKey);
