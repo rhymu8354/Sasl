@@ -78,6 +78,10 @@ namespace Client {
 
         // Mechanism
     public:
+        virtual SystemAbstractions::DiagnosticsSender::UnsubscribeDelegate SubscribeToDiagnostics(
+            SystemAbstractions::DiagnosticsSender::DiagnosticMessageDelegate delegate,
+            size_t minLevel = 0
+        ) override;
         virtual void SetCredentials(
             const std::string& credentials,
             const std::string& authenticationIdentity,

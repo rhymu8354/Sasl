@@ -11,6 +11,7 @@
 #include <functional>
 #include <memory>
 #include <string>
+#include <SystemAbstractions/DiagnosticsSender.hpp>
 
 namespace Sasl {
 namespace Client {
@@ -22,6 +23,27 @@ namespace Client {
     class Mechanism {
         // Methods
     public:
+        /**
+         * This method forms a new subscription to diagnostic
+         * messages published by the class.
+         *
+         * @param[in] delegate
+         *     This is the function to call to deliver messages
+         *     to the subscriber.
+         *
+         * @param[in] minLevel
+         *     This is the minimum level of message that this subscriber
+         *     desires to receive.
+         *
+         * @return
+         *     A function is returned which may be called
+         *     to terminate the subscription.
+         */
+        virtual SystemAbstractions::DiagnosticsSender::UnsubscribeDelegate SubscribeToDiagnostics(
+            SystemAbstractions::DiagnosticsSender::DiagnosticMessageDelegate delegate,
+            size_t minLevel = 0
+        ) = 0;
+
         /**
          * Set the identities and credentials to use in the authentication.
          *

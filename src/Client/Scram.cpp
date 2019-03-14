@@ -150,6 +150,14 @@ namespace Client {
      * This contains the private properties of a Scram instance.
      */
     struct Scram::Impl {
+        // Properties
+
+        /**
+         * This is a helper object used to generate and publish
+         * diagnostic messages.
+         */
+        SystemAbstractions::DiagnosticsSender diagnosticsSender;
+
         /**
          * This is used to keep track of what stage the authentication
          * between client an server is in.
@@ -235,6 +243,16 @@ namespace Client {
          * during the authentication procedure.
          */
         bool faulted = false;
+
+        // Methods
+
+        /**
+         * This is the default constructor of the structure
+         */
+        Impl()
+            : diagnosticsSender("Scram")
+        {
+        }
     };
 
     Scram::~Scram() noexcept = default;
@@ -244,6 +262,13 @@ namespace Client {
     Scram::Scram()
         : impl_(new Impl)
     {
+    }
+
+    SystemAbstractions::DiagnosticsSender::UnsubscribeDelegate Scram::SubscribeToDiagnostics(
+        SystemAbstractions::DiagnosticsSender::DiagnosticMessageDelegate delegate,
+        size_t minLevel
+    ) {
+        return impl_->diagnosticsSender.SubscribeToDiagnostics(delegate, minLevel);
     }
 
     void Scram::SetHashFunction(
@@ -284,6 +309,10 @@ namespace Client {
     }
 
     std::string Scram::GetInitialResponse() {
+        impl_->diagnosticsSender.SendDiagnosticInformationString(
+            0,
+            "C: AUTH SCRAM* " + impl_->clientFirstMessage
+        );
         return impl_->clientFirstMessage;
     }
 
@@ -294,6 +323,10 @@ namespace Client {
         switch (impl_->step) {
             case Step::ClientNonce: {
                 impl_->step = Step::ServerChallenge;
+                impl_->diagnosticsSender.SendDiagnosticInformationString(
+                    0,
+                    "C: AUTH SCRAM* " + impl_->clientFirstMessage
+                );
                 return impl_->clientFirstMessage;
             } break;
 
@@ -370,6 +403,10 @@ namespace Client {
                 impl_->serverSignature = impl_->hmac(
                     serverKey,
                     authMessage
+                );
+                impl_->diagnosticsSender.SendDiagnosticInformationString(
+                    0,
+                    "C: " + clientFinalMessageWithoutProof + ",p=*******"
                 );
                 return (
                     clientFinalMessageWithoutProof

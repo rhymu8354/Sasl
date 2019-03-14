@@ -17,17 +17,41 @@ namespace Client {
      * This contains the private properties of a Plain instance.
      */
     struct Plain::Impl {
+        // Properties
+
+        /**
+         * This is a helper object used to generate and publish
+         * diagnostic messages.
+         */
+        SystemAbstractions::DiagnosticsSender diagnosticsSender;
+
         /**
          * This is the line to provide to the server to pass along
          * the credentials.
          */
-        std::string encodedCredentials;
+        std::string encodedCredentialsToSend;
+
+        /**
+         * This is the line to publish to diagnostics when passing along
+         * the credentials to the server.
+         */
+        std::string encodedCredentialsToPublishToDiagnostics;
 
         /**
          * This indicates whether or not the credentials have been
          * sent to the server.
          */
         bool credentialsSent = false;
+
+        // Methods
+
+        /**
+         * This is the default constructor of the structure
+         */
+        Impl()
+            : diagnosticsSender("Plain")
+        {
+        }
     };
 
     Plain::~Plain() noexcept = default;
@@ -39,22 +63,39 @@ namespace Client {
     {
     }
 
+    SystemAbstractions::DiagnosticsSender::UnsubscribeDelegate Plain::SubscribeToDiagnostics(
+        SystemAbstractions::DiagnosticsSender::DiagnosticMessageDelegate delegate,
+        size_t minLevel
+    ) {
+        return impl_->diagnosticsSender.SubscribeToDiagnostics(delegate, minLevel);
+    }
+
     void Plain::SetCredentials(
         const std::string& credentials,
         const std::string& authenticationIdentity,
         const std::string& authorizationIdentity
     ) {
-        std::ostringstream builder;
-        builder << authorizationIdentity;
-        builder << '\0';
-        builder << authenticationIdentity;
-        builder << '\0';
-        builder << credentials;
-        impl_->encodedCredentials = builder.str();
+        std::ostringstream builderForSending, builderForDiagnostics;
+        builderForSending     << authorizationIdentity;
+        builderForDiagnostics << authorizationIdentity;
+        builderForSending     << '\0';
+        builderForDiagnostics << "\\0";
+        builderForSending     << authenticationIdentity;
+        builderForDiagnostics << authenticationIdentity;
+        builderForSending     << '\0';
+        builderForDiagnostics << "\\0";
+        builderForSending     << credentials;
+        builderForDiagnostics << "*******";
+        impl_->encodedCredentialsToSend = builderForSending.str();
+        impl_->encodedCredentialsToPublishToDiagnostics = builderForDiagnostics.str();
     }
 
     std::string Plain::GetInitialResponse() {
-        return impl_->encodedCredentials;
+        impl_->diagnosticsSender.SendDiagnosticInformationString(
+            0,
+            "C: AUTH PLAIN " + impl_->encodedCredentialsToPublishToDiagnostics
+        );
+        return impl_->encodedCredentialsToSend;
     }
 
     std::string Plain::Proceed(const std::string& message) {
@@ -62,7 +103,7 @@ namespace Client {
             return "";
         } else {
             impl_->credentialsSent = true;
-            return impl_->encodedCredentials;
+            return impl_->encodedCredentialsToSend;
         }
     }
 
