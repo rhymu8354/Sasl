@@ -45,6 +45,11 @@ namespace Client {
         ) = 0;
 
         /**
+         * Reset the mechanism for use in a new authentication exchange.
+         */
+        virtual void Reset() = 0;
+
+        /**
          * Set the identities and credentials to use in the authentication.
          *
          * @param[in] credentials

@@ -48,6 +48,18 @@ TEST(PlainTests, ProceedAfterCredentialsSent) {
     EXPECT_EQ("", line);
 }
 
+TEST(PlainTests, Reset) {
+    Sasl::Client::Plain mech;
+    mech.SetCredentials("hunter2", "bob");
+    (void)mech.Proceed("");
+    mech.Reset();
+    const auto line = mech.Proceed("");
+    EXPECT_EQ(
+        std::string("\0bob\0hunter2", 12),
+        line
+    );
+}
+
 TEST(PlainTests, MechanismCannotDetermineSuccess) {
     Sasl::Client::Plain mech;
     mech.SetCredentials("hunter2", "bob");

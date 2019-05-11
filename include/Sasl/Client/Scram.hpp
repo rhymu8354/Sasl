@@ -82,6 +82,7 @@ namespace Client {
             SystemAbstractions::DiagnosticsSender::DiagnosticMessageDelegate delegate,
             size_t minLevel = 0
         ) override;
+        virtual void Reset() override;
         virtual void SetCredentials(
             const std::string& credentials,
             const std::string& authenticationIdentity,

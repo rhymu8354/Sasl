@@ -41,6 +41,16 @@ TEST(LoginTests, ProceedAfterSecondChallenge) {
     EXPECT_EQ("", line);
 }
 
+TEST(LoginTests, Reset) {
+    Sasl::Client::Login mech;
+    mech.SetCredentials("hunter2", "bob");
+    (void)mech.Proceed("Username:");
+    (void)mech.Proceed("Password:");
+    mech.Reset();
+    const auto line = mech.Proceed("Username:");
+    EXPECT_EQ("bob", line);
+}
+
 TEST(LoginTests, MechanismCannotDetermineSuccess) {
     Sasl::Client::Login mech;
     mech.SetCredentials("hunter2", "bob");

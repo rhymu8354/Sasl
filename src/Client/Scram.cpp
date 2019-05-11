@@ -284,6 +284,11 @@ namespace Client {
         impl_->digestSize = digestSize;
     }
 
+    void Scram::Reset() {
+        impl_->succeeded = false;
+        impl_->faulted = false;
+    }
+
     void Scram::SetCredentials(
         const std::string& credentials,
         const std::string& authenticationIdentity,

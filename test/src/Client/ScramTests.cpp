@@ -299,7 +299,7 @@ TEST(ScramTests, ProceedAfterUserNameAndClientNonceSent) {
     EXPECT_EQ("c=biws,r=" + serverNonce + ",p=" + expectedClientProofAndServerSignature.clientProof, line);
 }
 
-TEST(ScramTests, SuccessfulServerSignature) {
+TEST(ScramTests, SuccessfulServerSignatureThenReset) {
     Sasl::Client::Scram mech;
     mech.SetHashFunction(
         Hash::Sha1,
@@ -325,9 +325,11 @@ TEST(ScramTests, SuccessfulServerSignature) {
     );
     const auto line = mech.Proceed("v=" + expectedClientProofAndServerSignature.serverSignature);
     EXPECT_TRUE(mech.Succeeded());
+    mech.Reset();
+    EXPECT_FALSE(mech.Succeeded());
 }
 
-TEST(ScramTests, UnsuccessfulServerSignature) {
+TEST(ScramTests, FaultThenReset) {
     Sasl::Client::Scram mech;
     mech.SetHashFunction(
         Hash::Sha1,
@@ -335,22 +337,9 @@ TEST(ScramTests, UnsuccessfulServerSignature) {
         160
     );
     mech.SetCredentials("hunter2", "bob");
-    const auto usernameWithClientNonce = mech.Proceed("");
-    const auto clientNonce = usernameWithClientNonce.substr(11);
-    const auto serverNonce = clientNonce + "Poggers";
-    const auto base64EncodedSalt = Base64::Encode("PJSalt");
-    (void)mech.Proceed("r=" + serverNonce + ",s=" + base64EncodedSalt + ",i=4096");
-    const auto expectedClientProofAndServerSignature = ComputeClientProofAndServerSignature(
-        "bob",
-        "poggers",
-        base64EncodedSalt,
-        clientNonce,
-        serverNonce,
-        4096,
-        Hash::Sha1,
-        Hash::SHA1_BLOCK_SIZE,
-        160
-    );
-    const auto line = mech.Proceed("v=" + expectedClientProofAndServerSignature.serverSignature);
-    EXPECT_FALSE(mech.Succeeded());
+    (void)mech.Proceed("");
+    (void)mech.Proceed("foobar");
+    EXPECT_TRUE(mech.Faulted());
+    mech.Reset();
+    EXPECT_FALSE(mech.Faulted());
 }

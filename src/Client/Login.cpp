@@ -66,6 +66,10 @@ namespace Client {
         return impl_->diagnosticsSender.SubscribeToDiagnostics(delegate, minLevel);
     }
 
+    void Login::Reset() {
+        impl_->numChallenges = 0;
+    }
+
     void Login::SetCredentials(
         const std::string& credentials,
         const std::string& authenticationIdentity,

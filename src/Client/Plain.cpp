@@ -70,6 +70,10 @@ namespace Client {
         return impl_->diagnosticsSender.SubscribeToDiagnostics(delegate, minLevel);
     }
 
+    void Plain::Reset() {
+        impl_->credentialsSent = false;
+    }
+
     void Plain::SetCredentials(
         const std::string& credentials,
         const std::string& authenticationIdentity,
