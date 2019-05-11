@@ -92,7 +92,7 @@ namespace Client {
 
     std::string Plain::GetInitialResponse() {
         impl_->diagnosticsSender.SendDiagnosticInformationString(
-            0,
+            3,
             "C: AUTH PLAIN " + impl_->encodedCredentialsToPublishToDiagnostics
         );
         return impl_->encodedCredentialsToSend;

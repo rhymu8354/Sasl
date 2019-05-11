@@ -77,7 +77,7 @@ namespace Client {
 
     std::string Login::GetInitialResponse() {
         impl_->diagnosticsSender.SendDiagnosticInformationString(
-            0,
+            3,
             "C: AUTH LOGIN"
         );
         return "";
@@ -87,14 +87,14 @@ namespace Client {
         switch (++impl_->numChallenges) {
             case 1: {
                 impl_->diagnosticsSender.SendDiagnosticInformationString(
-                    0,
+                    3,
                     "C: " + impl_->username
                 );
             } return impl_->username;
 
             case 2: {
                 impl_->diagnosticsSender.SendDiagnosticInformationString(
-                    0,
+                    3,
                     "C: *******"
                 );
             } return impl_->password;
