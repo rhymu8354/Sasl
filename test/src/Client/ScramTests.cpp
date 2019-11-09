@@ -15,7 +15,7 @@
 #include <Sasl/Client/Scram.hpp>
 #include <stdint.h>
 #include <string>
-#include <SystemAbstractions/StringExtensions.hpp>
+#include <StringExtensions/StringExtensions.hpp>
 #include <vector>
 
 namespace {
@@ -161,7 +161,7 @@ namespace {
         const std::string clientFinalMessageWithoutProof = (
             "c=biws,r=" + serverNonce
         );
-        const auto serverFirstMessage = SystemAbstractions::sprintf(
+        const auto serverFirstMessage = StringExtensions::sprintf(
             "r=%s,s=%s,i=%zu",
             serverNonce.c_str(),
             base64EncodedSalt.c_str(),

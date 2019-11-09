@@ -14,8 +14,8 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <string>
+#include <StringExtensions/StringExtensions.hpp>
 #include <SystemAbstractions/CryptoRandom.hpp>
-#include <SystemAbstractions/StringExtensions.hpp>
 #include <vector>
 
 namespace {
@@ -336,7 +336,7 @@ namespace Client {
             } break;
 
             case Step::ServerChallenge: {
-                const auto pieces = SystemAbstractions::Split(message, ',');
+                const auto pieces = StringExtensions::Split(message, ',');
                 size_t numIterations = 1;
                 std::string serverNonce;
                 std::vector< uint8_t > salt;
